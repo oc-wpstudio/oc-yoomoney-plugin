@@ -1,0 +1,15 @@
+{
+    "name": "wpstudio/oc-yoomoney-plugin",
+    "type": "october-plugin",
+    "description": "YooMoney payment gateway for offline.mall",
+    "require": {
+        "dimti/omnipay-yoomoney": "dev-master"
+    },
+    "authors": [
+        {
+            "name": "WP Studio Team",
+            "email": "info@wpstudio.ru"
+        }
+    ],
+    "minimum-stability": "dev"
+}
