@@ -54,7 +54,7 @@ class YooMoneyCheckout extends PaymentProvider
             $response = $request->send();
 
             if (!$response->isSuccessful() && !$response->isRedirect()) {
-                throw new InvalidResponseException();
+                throw new \Exception($response->getMessage() ?: 'YooMoney request failed');
             }
         } catch (Throwable $e) {
             return $result->fail([], $e);
@@ -113,12 +113,12 @@ class YooMoneyCheckout extends PaymentProvider
         $gateway = Omnipay::create('\\Omnipay\\YooMoney\\Gateway');
 
         $gateway->setShopId(PaymentGatewaySettings::get('yoomoney_shop_id'));
-        $gateway->setSecretKey(PaymentGatewaySettings::get('yoomoney_secret_key'));
+        $gateway->setSecretKey(decrypt(PaymentGatewaySettings::get('yoomoney_secret_key')));
 
         if (PaymentGatewaySettings::get('yoomoney_test_mode')) {
             $gateway->setTestMode(true);
             $gateway->setShopId(PaymentGatewaySettings::get('yoomoney_shop_id_test'));
-            $gateway->setSecretKey(PaymentGatewaySettings::get('yoomoney_secret_key_test'));
+            $gateway->setSecretKey(decrypt(PaymentGatewaySettings::getEncryptableValue('yoomoney_secret_key_test')));
         }
 
         return $gateway;
@@ -158,6 +158,6 @@ class YooMoneyCheckout extends PaymentProvider
 
     public function encryptedSettings(): array
     {
-        return ['yoomoney_secret_key', 'yoomoney_secret_key_test'];
+        return ['yoomoney_secret_key', 'yoomoney_secret_key_test', 'secretKey'];
     }
 }
